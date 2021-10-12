@@ -1,0 +1,69 @@
+<script lang="ts">
+</script>
+
+<style lang="postcss">
+</style>
+
+<div style="background-color: red;">
+
+  # What is reactivity?
+
+  Reactivity means that functions interact with their inputs in real-time.
+
+</div>
+
+## Example: Not reactive
+
+```javascript
+alpha = 0;
+beta = alpha;
+alpha = 1;
+
+expect(alph).toBe(1);
+expect(beta).toBe(1);
+```
+
+## Example: Reactivity
+
+Ways to implement reactivity in JavaScript:
+
+- observers
+- (magic:)
+
+```javascript
+alpha = 0;
+$: beta = alpha;
+alpha = 1;
+
+expect(alph).toBe(1);
+expect(beta).toBe(1);
+```
+
+# How have web frameworks been achieving reactivity?
+
+Let's take a look at React.js:
+
+- application structured in *components* with input parameters
+
+- application has its own Virtual Document Object Model (*VDOM*)
+  beside the browsers DOM
+
+- when an input parameter changes, then
+  - the whole component is recalculated and
+  - the VDOM and DOM are compared so that
+  - the right elements in the DOM can be modified.
+
+- React.js is reactive but the reactivity is very expensive
+
+# How does Svelte achieve reactivity?
+
+## Syntax and compilation
+
+- Svelte provides a compiler
+
+- Svelte syntax is
+  - syntactically a subset of JavaScript but
+  - semantically interpreted different
+
+- Svelte code is often split into html-like tags,
+  similar to .vue-files

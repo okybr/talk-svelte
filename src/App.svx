@@ -9,7 +9,7 @@
   $: fullName = firstName + ' ' + lastName;
 </script>
 
-<Swiper effect="{'cards'}" keyboard='{{ "enabled": true }}'>
+<Swiper effect='cards' keyboard={{ enabled: true }}>
 <SwiperSlide>
 
 # Svelte - A truely reactive web framework
@@ -193,6 +193,44 @@ In Svelte, component input properties are declared using the JavaScript's `expor
 
 Svelte has all the other features you know from similar frameworks.
 But now let's [dive into the code](https://yewtu.be/watch?v=dQw4w9WgXcQ)!
+
+</SwiperSlide>
+<SwiperSlide>
+
+# Is it worth?
+
+Let's compare the speed of React and Svelte (and Vue).
+
+</SwiperSlide>
+<SwiperSlide>
+
+# Is it just about speed?
+
+No, Svelte is not only about speed:
+
+- efficient solutions for what React-hooks do:
+  - reactivity (`$:` vs state-hook)
+  - global state (*stores* vs react-effects)
+- emphasize on accessibility
+- nice feature for animations
+
+</SwiperSlide>
+<SwiperSlide>
+
+# Looking forward ...
+
+- ... to Svelte-Kit
+  - routing framework for Svelte with SSR etc.
+  - built on top of Vite
+
+- ... to other projects improving the idea of reactive DOM modification.
+
+</SwiperSlide>
+<SwiperSlide>
+
+# Fin
+
+- Must-See: Rich Harris' (initiator of Svelte) lightning talk on Svelte
 
 </SwiperSlide>
 </Swiper>

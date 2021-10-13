@@ -1,10 +1,12 @@
 <script lang="ts">
-
   import SwiperCore, { EffectCards, Keyboard } from 'swiper';
   import { Swiper, SwiperSlide } from 'swiper/svelte';
   import 'swiper/css/bundle';
 
   SwiperCore.use([EffectCards, Keyboard]);
+
+  let firstName, lastName;
+  $: fullName = firstName + ' ' + lastName;
 </script>
 
 <Swiper effect="{'cards'}" keyboard='{{ "enabled": true }}'>
@@ -24,46 +26,39 @@ Reactivity means that functions interact with their inputs in real-time.
 </SwiperSlide>
 <SwiperSlide>
 
-## Example: Not reactive
+## Non-Reactive Code Example
 
 ```javascript
-alpha = 0;
-beta = alpha;
-alpha = 1;
+actor = 0;
+reactor = actor;
+actor = 1;
 
-expect(alph).toBe(1);
-expect(beta).toBe(1);
+expect(actor).toBe(1);
+expect(reactor).toBe(0);
 ```
 
 </SwiperSlide>
 <SwiperSlide>
 
-## Example: Reactivity
-
-Ways to implement reactivity in JavaScript:
-
-- observers
-- (magic:)
+## Reactive Code Example
 
 ```javascript
-alpha = 0;
-$: beta = alpha;
-alpha = 1;
+actor = 0;
+reactor $= actor;
+actor = 1;
 
-expect(alph).toBe(1);
-expect(beta).toBe(1);
+expect(actor).toBe(1);
+expect(reactor).toBe(1);
 ```
 
 </SwiperSlide>
 <SwiperSlide>
 
-# How have web frameworks been achieving reactivity?
+# React's Approach to Reactivity
 
-Let's take a look at React.js:
+- application structured in **components** with input parameters
 
-- application structured in *components* with input parameters
-
-- application has its own Virtual Document Object Model (*VDOM*)
+- application has its own Virtual Document Object Model (**VDOM**)
 beside the browsers DOM
 
 - when an input parameter changes, then
@@ -71,23 +66,133 @@ beside the browsers DOM
   - the VDOM and DOM are compared so that
   - the right elements in the DOM can be modified.
 
-- React.js is reactive but the reactivity is very expensive
+- React.js is reactive but the reactivity is very **expensive**
 
 </SwiperSlide>
 <SwiperSlide>
 
-# How does Svelte achieve reactivity?
+# Svelte's Approach to Reactivity
 
-## Syntax and compilation
-
-- Svelte provides a compiler
+- Svelte a library and a Svelte-to-JavaScript transpiler
 
 - Svelte syntax is
-  - syntactically a subset of JavaScript but
-  - semantically interpreted different
+  - syntactically JavaScript but
+  - semantically interpreted slightly differently
 
-- Svelte code is often split into html-like tags,
-similar to .vue-files
+- Svelte code is often split into HTML-like tags,
+  similar to Vue
+
+</SwiperSlide>
+<SwiperSlide>
+
+## Labels and jumps in JavaScript
+
+In JS, [labels](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/label) are used to skip an iteration of a certain level of nested loops:
+
+```javascript
+firstLabel:
+for (...) {
+
+   secondLabel:
+   for (...) {
+
+      if (...) {
+         continue firstLabel;
+      }
+   }
+}
+```
+
+</SwiperSlide>
+<SwiperSlide>
+
+## Svelte's Reactive Label
+
+In JS, `$` is a valid label-identifier.
+In Svelte, it makes statements reactive.
+It [means](https://svelte.dev/tutorial/reactive-declarations): *re-run this code whenever any of the referenced values change*.
+
+```svelte
+<script>
+  let firstName, lastName;
+  $: fullName = firstName + ' ' + lastName;
+</script>
+
+<input bind:value={firstName} placeholder="First name">
+<input bind:value={lastName} placeholder="Last name">
+
+<p>Hello {fullName}!</p>
+```
+
+</SwiperSlide>
+<SwiperSlide>
+
+## Hello {fullName}!
+
+<input bind:value={firstName} placeholder="First name">
+<input bind:value={lastName} placeholder="Last name">
+
+</SwiperSlide>
+<SwiperSlide>
+
+## Svelte's Reactive Label
+
+Make a whole code block reactive:
+
+```javascript
+$: {
+  foo = bar;
+  baz = qux;
+}
+```
+
+</SwiperSlide>
+<SwiperSlide>
+
+## Looking behind the curtain
+
+Easily use the [Svelte-REPL](https://svelte.dev/repl/c1c9ee888b0c4bb0a65d6040839d9382):
+
+```javascript
+$$self.$$.update = () => {
+  if ($$self.$$.dirty & /*firstName, lastName*/ 3) {
+    $: $$invalidate(2, fullName = firstName + ' ' + lastName);
+  }
+};
+```
+
+</SwiperSlide>
+<SwiperSlide>
+
+## Svelte Syntax for Component Properties
+
+In Svelte, component input properties are declared using the JavaScript's `export` module syntax:
+
+```svelte
+<!-- This is Hello.svelte. -->
+<script>
+  export let name;
+</script>
+
+<p>Hello {name}!</p>
+```
+
+```svelte
+<!-- This is another component. -->
+<script>
+  import Hello from './Hello.svelte';
+</script>
+
+<Hello name="from the other side"/>
+```
+
+</SwiperSlide>
+<SwiperSlide>
+
+## Yada yada yada
+
+Svelte has all the other features you know from similar frameworks.
+But now let's [dive into the code](https://yewtu.be/watch?v=dQw4w9WgXcQ)!
 
 </SwiperSlide>
 </Swiper>
@@ -95,6 +200,10 @@ similar to .vue-files
 <style lang="postcss">
   :global(*) {
     box-sizing: border-box;
+  }
+
+  :global(a) {
+    color: inherit;
   }
 
   :global(body) {
@@ -107,11 +216,16 @@ similar to .vue-files
     font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
   }
 
+  :global(p > code) {
+    font-size: 2.3rem;
+  }
+
   :global(pre) {
-    font-size: 2.2rem;
-    padding: 5%;
-    border-radius: 5%;
+    font-size: 1.8rem;
+    padding: 1em;
+    border-radius: 1em;
     background-color: rgba(255, 255, 255, 0.281);
+    overflow-x: scroll;
   }
 
   :global(#app) {
@@ -129,22 +243,20 @@ similar to .vue-files
   }
 
   :global(.swiper-slide) {
-    padding: 5%;
-    border-radius: 5%;
+    padding: 3rem;
+    border-radius: 3rem;
   }
 
   :global(.swiper-slide > *:first-child) {
     margin-top: 0px;
   }
 
-  :global(.swiper-slide:nth-child(1n)) { background-color: rgb(206, 17, 17); }
-  :global(.swiper-slide:nth-child(2n)) { background-color: rgb(0, 140, 255); }
-  :global(.swiper-slide:nth-child(3n)) { background-color: rgb(10, 184, 111); }
-  :global(.swiper-slide:nth-child(4n)) { background-color: rgb(211, 122, 7); }
-  :global(.swiper-slide:nth-child(5n)) { background-color: rgb(118, 163, 12); }
-  :global(.swiper-slide:nth-child(6n)) { background-color: rgb(180, 10, 47); }
-  :global(.swiper-slide:nth-child(7n)) { background-color: rgb(35, 99, 19); }
-  :global(.swiper-slide:nth-child(8n)) { background-color: rgb(0, 68, 255); }
-  :global(.swiper-slide:nth-child(9n)) { background-color: rgb(218, 12, 218); }
-  :global(.swiper-slide:nth-child(10n)) { background-color: rgb(54, 94, 77); }
+  :global(.swiper-slide:nth-child(8n+0)) { background-color: rgb(54, 94, 77); }
+  :global(.swiper-slide:nth-child(8n+1)) { background-color: rgb(206, 17, 17); }
+  :global(.swiper-slide:nth-child(8n+2)) { background-color: rgb(0, 140, 255); }
+  :global(.swiper-slide:nth-child(8n+3)) { background-color: rgb(118, 163, 12); }
+  :global(.swiper-slide:nth-child(8n+4)) { background-color: rgb(211, 122, 7); }
+  :global(.swiper-slide:nth-child(8n+5)) { background-color: rgb(180, 10, 47); }
+  :global(.swiper-slide:nth-child(8n+6)) { background-color: rgb(35, 99, 19); }
+  :global(.swiper-slide:nth-child(8n+7)) { background-color: rgb(0, 68, 255); }
 </style>
